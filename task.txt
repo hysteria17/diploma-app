@@ -1,0 +1,8 @@
+Variant 13
+To perform our investigation, collect some meteorology information using API from https://frost.met.no/
+
+Collect (and store in a local database) information about all Norway weather stations which measures wind from direction
+and provide a report (output) of the top 10 points with the oldest data of measuring beginning.
+
+
+curl -X GET --header 'Accept: application/json' --header 'Authorization: Basic ZjdmYjI4ZDItNmRlZC00NWFlLTk1NzUtMTBhYWMzMDgzMDFkOg==' 'https://frost.met.no/observations/v0.jsonld?sources=SN94805&referencetime=latest&elements=wind_from_direction%2Cwind_speed%2Cair_temperature'
