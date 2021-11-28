@@ -1,1 +1,2 @@
-/app/mod_meteo/views.py
+.idea/**/*
+venv/**/*
