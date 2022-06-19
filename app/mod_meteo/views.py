@@ -61,38 +61,39 @@ def query():
         }
         data = request_api(endpoint, parameters)
 
-        reference_time = datetime.fromisoformat(data[0]['referenceTime'][:-1])
-        wind_from_direction = None
-        wind_speed = None
-        air_temperature = None
+        if data != None:
+            reference_time = datetime.fromisoformat(data[0]['referenceTime'][:-1])
+            wind_from_direction = None
+            wind_speed = None
+            air_temperature = None
 
-        observations = data[0]['observations']
+            observations = data[0]['observations']
 
-        if len(data) > 1:
-            for i in range(1, len(data)):
-                for x in data[i]['observations']:
-                    observations.append(x)
+            if len(data) > 1:
+                for i in range(1, len(data)):
+                    for x in data[i]['observations']:
+                        observations.append(x)
 
-        app.logger.info(observations)
+            app.logger.info(observations)
 
-        for observation in observations:
-            if observation['elementId'] == 'wind_from_direction':
-                wind_from_direction = observation['value']
-                continue
-            if observation['elementId'] == 'wind_speed':
-                wind_speed = observation['value']
-                continue
-            if observation['elementId'] == 'air_temperature':
-                air_temperature = observation['value']
+            for observation in observations:
+                if observation['elementId'] == 'wind_from_direction':
+                    wind_from_direction = observation['value']
+                    continue
+                if observation['elementId'] == 'wind_speed':
+                    wind_speed = observation['value']
+                    continue
+                if observation['elementId'] == 'air_temperature':
+                    air_temperature = observation['value']
 
-        app.logger.info("Adding observation to database")
+            app.logger.info("Adding observation to database")
 
-        # app.logger.info(wind_from_direction, wind_speed, air_temperature)
-        obs = Observation(source_id=src.id, wind_from_direction_value=wind_from_direction, wind_speed_value=wind_speed,
-                          air_temperature=air_temperature, reference_time=reference_time)
-        src.observations.append(obs)
-        db.session.add(src)
-        db.session.add(obs)
+            # app.logger.info(wind_from_direction, wind_speed, air_temperature)
+            obs = Observation(source_id=src.id, wind_from_direction_value=wind_from_direction, wind_speed_value=wind_speed,
+                            air_temperature=air_temperature, reference_time=reference_time)
+            src.observations.append(obs)
+            db.session.add(src)
+            db.session.add(obs)
 
     app.logger.info("Commiting to DB")
     db.session.commit()
@@ -102,9 +103,11 @@ def query():
 @mod_meteo.route("/", methods=['GET','POST'])
 def index():
     sources = Source.query.order_by(Source.valid_from).limit(10).all()
+    # sources = Source.query.limit(10).all()
     observations_data = []
     for src in sources:
         observation = Observation.query.filter_by(source_id=src.id).order_by(Observation.reference_time.desc()).first()
+        # if observation is None == False:
         obs = dict(
             sensor_id=src.sensor_id,
             valid_from=src.valid_from,

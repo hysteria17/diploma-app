@@ -6,6 +6,9 @@ app = Flask(__name__)
 app.config.from_object('config')
 
 db = SQLAlchemy(app)
+
+from app.mod_meteo.models import *
+
 migrate = Migrate(app, db)
 
 @app.errorhandler(404)
@@ -17,4 +20,4 @@ from app.mod_meteo.views import mod_meteo as meteo_module
 
 app.register_blueprint(meteo_module)
 # db.drop_all()
-db.create_all()
+# db.create_all()

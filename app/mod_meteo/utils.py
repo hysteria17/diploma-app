@@ -10,6 +10,8 @@ def request_api(endpoint, parameters):
     r = requests.get(endpoint, parameters, auth=(client_id, ''))
     json = r.json()
 
+    data = None
+
     if r.status_code == 200:
         data = json['data']
         app.logger.info("Data retrieved from frost.met.no!")
